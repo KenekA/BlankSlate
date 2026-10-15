@@ -66,9 +66,6 @@ def open_lootbox(player_id, box_id):
         print(f"Not enough currency. Need {cost}, have {current_currency}.")
         return None
 
-    # deduct the cost
-    update_currency(player_id, -cost)
-
     # roll the tier, trait, and stars
     tier     = roll_tier(lootbox["drop_rates"])
     trait_id = roll_trait(box_id, tier)
@@ -76,6 +73,8 @@ def open_lootbox(player_id, box_id):
         return None
     stars    = roll_stars()
 
+        # deduct the cost
+    update_currency(player_id, -cost)
     # deposit into inventory
     add_trait_to_inventory(player_id, trait_id, stars)
 

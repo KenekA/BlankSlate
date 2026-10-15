@@ -27,6 +27,7 @@ def load_inventory(player_id):
 def save_inventory(player_id, inventory):
     # saves a player's inventory dictionary back to their json file
     path = get_inventory_path(player_id)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(inventory, f, indent=4)
 
@@ -42,8 +43,23 @@ def load_profile(player_id):
 def save_profile(player_id, profile):
     # saves a player's profile back to their json file
     path = get_profile_path(player_id)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(profile, f, indent=4)
+
+def create_player(player_id, name="Player", starting_currency=0):
+    # sets up a new player's folder, profile, and empty inventory
+    # safe to call on every startup: anything that already exists is left alone
+    if not os.path.exists(get_profile_path(player_id)):
+        save_profile(player_id, {
+            "id": player_id,
+            "name": name,
+            "currency": starting_currency
+        })
+        print(f"Created new player: {player_id}")
+
+    if not os.path.exists(get_inventory_path(player_id)):
+        save_inventory(player_id, {})
 
 def add_trait_to_inventory(player_id, trait_id, stars):
     # adds a dropped trait to the player's inventory

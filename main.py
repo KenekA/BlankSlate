@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import anthropic
 from trait_manager import apply_trait_to_slate, get_trait_by_id, get_conflicting_trait_id
 from memory_manager import load_memory, save_memory, add_exchange, get_recent_messages
+from game_actions import apply_from_inventory
 
 from slate_manager import (
     initialize,           # sets up folders and files on first run
@@ -19,6 +20,7 @@ from slate_manager import (
 from prompt_compiler import build_system_prompt
 from trait_manager import apply_trait_to_slate, get_trait_by_id
 from inventory_manager import (
+    create_player,
     load_inventory,       # loads the player's inventory
     display_inventory,    # prints a readable inventory summary
     remove_trait_from_inventory  # removes a trait copy from inventory
@@ -26,6 +28,8 @@ from inventory_manager import (
 from lootbox_manager import open_lootbox, load_lootboxes
 
 load_dotenv()
+
+
 
 # the player ID for now — will come from a login system later
 PLAYER_ID = "player_001"
@@ -161,15 +165,15 @@ def inventory_menu():
     trait_data = get_trait_by_id(trait_id)
     trait_name = trait_data["name"] if trait_data else trait_id
 
-        # check for a conflict BEFORE changing anything
-    # if there is one, stop here so the inventory copy isn't consumed
-    conflict_id = get_conflicting_trait_id(slate, trait_id)
-    if conflict_id is not None:
-        conflict_data = get_trait_by_id(conflict_id)
-        conflict_name = conflict_data["name"] if conflict_data else conflict_id
+    result = apply_from_inventory(PLAYER_ID, slate, trait_id, stars)
+    if not result["ok"]:
+        conflict_data = get_trait_by_id(result["conflict_id"])
+        conflict_name = conflict_data["name"] if conflict_data else result["conflict_id"]
         print(f"\nCan't apply {trait_name}: {slate['name']} already has {conflict_name}.")
         print("Nothing was used. The trait is still in your inventory.")
         return
+
+    print(f"\nApplied {trait_name} ({stars} stars) to {slate['name']}!")
 
     # apply the trait and save
     slate = apply_trait_to_slate(slate, trait_id, stars)
@@ -202,7 +206,9 @@ def slate_menu():
 
 def main():
     # runs once at startup to make sure all folders and files exist
+        # runs once at startup to make sure all folders and files exist
     initialize()
+    create_player(PLAYER_ID)
 
     print("Welcome to Blank Slate.")
 
