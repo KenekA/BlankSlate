@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 import anthropic
 from trait_manager import apply_trait_to_slate, get_trait_by_id, get_conflicting_trait_id
+from memory_manager import load_memory, save_memory, add_exchange, get_recent_messages
 
 from slate_manager import (
     initialize,           # sets up folders and files on first run
@@ -35,51 +36,54 @@ client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 def chat_with_slate():
     # loads the active slate, compiles its personality,
-    # and starts a conversation loop with Claude
+    # restores its saved memory, and starts a conversation loop with Claude
     slate = get_active_slate()
     if slate is None:
         print("No active slate. Please select one first.")
         return
 
     system_prompt = build_system_prompt(slate)
-    conversation_history = []
+    memory = load_memory(PLAYER_ID, slate["name"])
 
-    print(f"\nNow chatting with {slate['name']}. Type 'quit' to return to menu.\n")
+    print(f"\nNow chatting with {slate['name']}. Type 'quit' to return to menu.")
+    if memory["messages"]:
+        print(f"({slate['name']} remembers your earlier conversations.)\n")
+    else:
+        print()
 
     while True:
         user_input = input("You: ")
 
-        # return to menu if user types quit
         if user_input.lower() == "quit":
             print(f"Leaving chat with {slate['name']}.\n")
             break
 
-        # skip empty inputs
         if user_input.strip() == "":
             print("Please enter a message.")
             continue
 
-        # add user message to history
-        conversation_history.append({
-            "role": "user",
-            "content": user_input
-        })
+        # recent saved messages plus the new one (not saved yet)
+        messages = get_recent_messages(memory) + [
+            {"role": "user", "content": user_input}
+        ]
 
-        # send to Claude
-        response = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1024,
-            system=system_prompt,
-            messages=conversation_history
-        )
+        try:
+            response = client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=1024,
+                system=system_prompt,
+                messages=messages
+            )
+        except anthropic.APIError as e:
+            # nothing was saved, so the chat history stays clean
+            print(f"\n[Couldn't reach {slate['name']}: {e}]\n")
+            continue
 
         assistant_reply = response.content[0].text
 
-        # add Claude's reply to history
-        conversation_history.append({
-            "role": "assistant",
-            "content": assistant_reply
-        })
+        # save the exchange only after the API call succeeded
+        add_exchange(memory, user_input, assistant_reply)
+        save_memory(PLAYER_ID, slate["name"], memory)
 
         print(f"\n{slate['name']}: {assistant_reply}\n")
 
