@@ -1,0 +1,69 @@
+{
+    "red": {
+        "red_001": {"id": "red_001", "name": "Waifu",      "tier": "red"},
+        "red_002": {"id": "red_002", "name": "Mysterious", "tier": "red"},
+        "red_003": {"id": "red_003", "name": "Good Demon", "tier": "red"},
+        "red_004": {"id": "red_004", "name": "Yandere",    "tier": "red"},
+        "red_005": {"id": "red_005", "name": "Sadodere",   "tier": "red"},
+        "red_006": {"id": "red_006", "name": "Mayadere",   "tier": "red"},
+        "red_007": {"id": "red_007", "name": "Tsundere",   "tier": "red"}
+    },
+    "gold": {
+        "gold_001": {"id": "gold_001", "name": "Lustful",    "tier": "gold"},
+        "gold_002": {"id": "gold_002", "name": "Jester",     "tier": "gold"},
+        "gold_003": {"id": "gold_003", "name": "Stoic",      "tier": "gold"},
+        "gold_004": {"id": "gold_004", "name": "Coy",        "tier": "gold"},
+        "gold_005": {"id": "gold_005", "name": "Addictive",  "tier": "gold"},
+        "gold_006": {"id": "gold_006", "name": "Vindictive", "tier": "gold"},
+        "gold_007": {"id": "gold_007", "name": "Poet",       "tier": "gold"}
+    },
+    "purple": {
+        "purple_001": {"id": "purple_001", "name": "Playful",    "tier": "purple"},
+        "purple_002": {"id": "purple_002", "name": "Daydreamer", "tier": "purple"},
+        "purple_003": {"id": "purple_003", "name": "Cold",       "tier": "purple"},
+        "purple_004": {"id": "purple_004", "name": "Clever",     "tier": "purple"},
+        "purple_005": {"id": "purple_005", "name": "Gamer",      "tier": "purple"},
+        "purple_006": {"id": "purple_006", "name": "Bookworm",   "tier": "purple"},
+        "purple_007": {"id": "purple_007", "name": "Empathetic", "tier": "purple"}
+    },
+    "blue": {
+        "blue_001": {"id": "blue_001", "name": "Goofy",       "tier": "blue"},
+        "blue_002": {"id": "blue_002", "name": "Smart",       "tier": "blue"},
+        "blue_003": {"id": "blue_003", "name": "Foolish",     "tier": "blue"},
+        "blue_004": {"id": "blue_004", "name": "Shy",         "tier": "blue"},
+        "blue_005": {"id": "blue_005", "name": "Passionate",  "tier": "blue"},
+        "blue_006": {"id": "blue_006", "name": "Stressed",    "tier": "blue"},
+        "blue_007": {"id": "blue_007", "name": "Quick-witted","tier": "blue"},
+        "blue_008": {"id": "blue_008", "name": "Slow",        "tier": "blue"},
+        "blue_009": {"id": "blue_009", "name": "Apologetic",  "tier": "blue"},
+        "blue_010": {"id": "blue_010", "name": "Arsonist",    "tier": "blue"}
+    },
+   "white": {
+    "white_001": {"id": "white_001", "name": "Likes broccoli",    "tier": "white", "preference": "like",    "subject": "broccoli"},
+    "white_002": {"id": "white_002", "name": "Dislikes broccoli", "tier": "white", "preference": "dislike", "subject": "broccoli"},
+    "white_003": {"id": "white_003", "name": "Likes vegetables",  "tier": "white", "preference": "like",    "subject": "vegetables"},
+    "white_004": {"id": "white_004", "name": "Dislikes vegetables","tier": "white", "preference": "dislike", "subject": "vegetables"},
+    "white_005": {"id": "white_005", "name": "Likes Yahtzee",     "tier": "white", "preference": "like",    "subject": "yahtzee"},
+    "white_006": {"id": "white_006", "name": "Dislikes Yahtzee",  "tier": "white", "preference": "dislike", "subject": "yahtzee"},
+    "white_007": {"id": "white_007", "name": "Likes fruit",       "tier": "white", "preference": "like",    "subject": "fruit"},
+    "white_008": {"id": "white_008", "name": "Dislikes fruit",    "tier": "white", "preference": "dislike", "subject": "fruit"},
+    "white_009": {"id": "white_009", "name": "Likes plants",      "tier": "white", "preference": "like",    "subject": "plants"},
+    "white_010": {"id": "white_010", "name": "Dislikes plants",   "tier": "white", "preference": "dislike", "subject": "plants"},
+    "white_011": {"id": "white_011", "name": "Likes board games", "tier": "white", "preference": "like",    "subject": "board games"},
+    "white_012": {"id": "white_012", "name": "Dislikes board games","tier": "white", "preference": "dislike", "subject": "board games"},
+    "white_013": {"id": "white_013", "name": "Likes bread",       "tier": "white", "preference": "like",    "subject": "bread"},
+    "white_014": {"id": "white_014", "name": "Dislikes bread",    "tier": "white", "preference": "dislike", "subject": "bread"},
+    "white_015": {"id": "white_015", "name": "Likes movies",      "tier": "white", "preference": "like",    "subject": "movies"},
+    "white_016": {"id": "white_016", "name": "Dislikes movies",   "tier": "white", "preference": "dislike", "subject": "movies"},
+    "white_017": {"id": "white_017", "name": "Likes music",       "tier": "white", "preference": "like",    "subject": "music"},
+    "white_018": {"id": "white_018", "name": "Dislikes music",    "tier": "white", "preference": "dislike", "subject": "music"},
+    "white_019": {"id": "white_019", "name": "Likes beer",        "tier": "white", "preference": "like",    "subject": "beer"},
+    "white_020": {"id": "white_020", "name": "Dislikes beer",     "tier": "white", "preference": "dislike", "subject": "beer"},
+    "white_021": {"id": "white_021", "name": "Likes wine",        "tier": "white", "preference": "like",    "subject": "wine"},
+    "white_022": {"id": "white_022", "name": "Dislikes wine",     "tier": "white", "preference": "dislike", "subject": "wine"},
+    "white_023": {"id": "white_023", "name": "Likes poems",       "tier": "white", "preference": "like",    "subject": "poems"},
+    "white_024": {"id": "white_024", "name": "Dislikes poems",    "tier": "white", "preference": "dislike", "subject": "poems"},
+    "white_025": {"id": "white_025", "name": "Likes technology",  "tier": "white", "preference": "like",    "subject": "technology"},
+    "white_026": {"id": "white_026", "name": "Dislikes technology","tier": "white", "preference": "dislike", "subject": "technology"}
+    }
+}

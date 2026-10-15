@@ -1,0 +1,29 @@
+{
+    "name": "Rex",
+    "traits": [
+         {
+            "trait_id": "red_002",
+            "stars": 5
+        },
+        {
+            "trait_id": "gold_003",
+            "stars": 8
+        },
+        {
+            "trait_id":"gold_007",
+            "stars":10
+        },
+        {
+            "trait_id":"purple_003",
+            "stars" : 4
+        },
+        {
+            "trait_id": "white_009",
+            "stars": 7
+        },
+        {
+            "trait_id": "white_012",
+            "stars": 5
+        }
+    ]
+}

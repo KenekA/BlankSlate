@@ -1,0 +1,42 @@
+{
+    "box_001": {
+        "id": "box_001",
+        "name": "Starter Box",
+        "description": "A basic box for new players",
+        "cost": 100,
+        "drop_rates": {
+            "red":    0.5,
+            "gold":   1.0,
+            "purple": 8.5,
+            "blue":   30.0,
+            "white":  60.0
+        },
+        "trait_pools": {
+            "red":    null,
+            "gold":   ["gold_002", "gold_003"],
+            "purple": null,
+            "blue":   null,
+            "white":  null
+        }
+    },
+    "box_002": {
+        "id": "box_002",
+        "name": "Jester's Box",
+        "description": "A chaotic box full of unpredictable traits",
+        "cost": 200,
+        "drop_rates": {
+            "red":    0.5,
+            "gold":   1.0,
+            "purple": 8.5,
+            "blue":   30.0,
+            "white":  60.0
+        },
+        "trait_pools": {
+            "red":    ["red_004", "red_005"],
+            "gold":   ["gold_001", "gold_002"],
+            "purple": ["purple_001", "purple_003"],
+            "blue":   null,
+            "white":  null
+        }
+    }
+}

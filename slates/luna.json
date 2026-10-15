@@ -1,0 +1,41 @@
+{
+    "name": "Luna",
+    "traits": [
+        {
+            "trait_id": "red_002",
+            "stars": 3
+        },
+        {
+            "trait_id": "gold_007",
+            "stars": 5
+        },
+        {
+            "trait_id": "purple_001",
+            "stars": 7
+        },
+        {
+            "trait_id": "blue_007",
+            "stars": 9
+        },
+        {
+            "trait_id": "blue_003",
+            "stars": 1
+        },
+        {
+            "trait_id": "blue_005",
+            "stars": 10
+        },
+        {
+            "trait_id": "white_014",
+            "stars": 10
+        },
+        {
+            "trait_id": "gold_005",
+            "stars": 4
+        },
+        {
+            "trait_id": "red_001",
+            "stars": 1
+        }
+    ]
+}

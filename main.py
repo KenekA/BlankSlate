@@ -1,0 +1,225 @@
+# main.py
+# the main entry point for Blank Slate
+# ties all systems together into a single interactive menu
+# this will eventually be replaced by a proper GUI
+
+import os
+from dotenv import load_dotenv
+import anthropic
+
+from slate_manager import (
+    initialize,           # sets up folders and files on first run
+    get_active_slate,     # loads the currently active slate
+    get_all_slates,       # lists all slates in the collection
+    set_active_slate,     # changes the active slate
+    save_slate            # saves a slate to disk
+)
+from prompt_compiler import build_system_prompt
+from trait_manager import apply_trait_to_slate, get_trait_by_id
+from inventory_manager import (
+    load_inventory,       # loads the player's inventory
+    display_inventory,    # prints a readable inventory summary
+    remove_trait_from_inventory  # removes a trait copy from inventory
+)
+from lootbox_manager import open_lootbox, load_lootboxes
+
+load_dotenv()
+
+# the player ID for now — will come from a login system later
+PLAYER_ID = "player_001"
+
+# create the anthropic client once at the top level
+# so all parts of the app can use the same connection
+client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+def chat_with_slate():
+    # loads the active slate, compiles its personality,
+    # and starts a conversation loop with Claude
+    slate = get_active_slate()
+    if slate is None:
+        print("No active slate. Please select one first.")
+        return
+
+    system_prompt = build_system_prompt(slate)
+    conversation_history = []
+
+    print(f"\nNow chatting with {slate['name']}. Type 'quit' to return to menu.\n")
+
+    while True:
+        user_input = input("You: ")
+
+        # return to menu if user types quit
+        if user_input.lower() == "quit":
+            print(f"Leaving chat with {slate['name']}.\n")
+            break
+
+        # skip empty inputs
+        if user_input.strip() == "":
+            print("Please enter a message.")
+            continue
+
+        # add user message to history
+        conversation_history.append({
+            "role": "user",
+            "content": user_input
+        })
+
+        # send to Claude
+        response = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            system=system_prompt,
+            messages=conversation_history
+        )
+
+        assistant_reply = response.content[0].text
+
+        # add Claude's reply to history
+        conversation_history.append({
+            "role": "assistant",
+            "content": assistant_reply
+        })
+
+        print(f"\n{slate['name']}: {assistant_reply}\n")
+
+def open_lootbox_menu():
+    # shows available lootboxes and lets the player open one
+    lootboxes = load_lootboxes()
+
+    print("\n--- Available lootboxes ---")
+    for box_id, box in lootboxes.items():
+        print(f"  [{box_id}] {box['name']} — {box['cost']} coins — {box['description']}")
+
+    print("\nEnter a box ID to open it, or 'back' to return.")
+    choice = input("> ").strip()
+
+    if choice.lower() == "back":
+        return
+
+    if choice not in lootboxes:
+        print("Invalid box ID.")
+        return
+
+    # open the box and show the result
+    result = open_lootbox(PLAYER_ID, choice)
+    if result:
+        print(f"\n  Tier:  {result['tier'].upper()}")
+        print(f"  Trait: {result['trait_id']}")
+        print(f"  Stars: {result['stars']}/10")
+
+def inventory_menu():
+    # shows the player's inventory and lets them apply a trait to their slate
+    display_inventory(PLAYER_ID)
+
+    inventory = load_inventory(PLAYER_ID)
+    if not inventory:
+        return
+
+    print("Enter a trait ID to apply it to your active Slate, or 'back' to return.")
+    trait_id = input("> ").strip()
+
+    if trait_id.lower() == "back":
+        return
+
+    if trait_id not in inventory:
+        print("Trait not found in inventory.")
+        return
+
+    # show available copies and their star ratings
+    copies = inventory[trait_id]["copies"]
+    print(f"\nAvailable copies of {trait_id}:")
+    for i, copy in enumerate(copies):
+        print(f"  [{i}] {copy['stars']} stars")
+
+    print("Enter the number of the copy to apply:")
+    try:
+        # try to convert the input to an integer
+        # if the player types something that isn't a number this will fail
+        index = int(input("> ").strip())
+        if index < 0 or index >= len(copies):
+            print("Invalid selection.")
+            return
+    except ValueError:
+        # catches the case where input() cant be converted to int
+        print("Please enter a number.")
+        return
+
+    stars = copies[index]["stars"]
+
+    # load the active slate, apply the trait, save it back
+    slate = get_active_slate()
+    if slate is None:
+        print("No active slate.")
+        return
+
+    # get the full trait data so we can show the name
+    trait_data = get_trait_by_id(trait_id)
+    trait_name = trait_data["name"] if trait_data else trait_id
+
+    # apply the trait and save
+    slate = apply_trait_to_slate(slate, trait_id, stars)
+    save_slate(slate)
+
+    # remove the used copy from inventory
+    remove_trait_from_inventory(PLAYER_ID, trait_id, stars)
+
+    print(f"\nApplied {trait_name} ({stars} stars) to {slate['name']}!")
+
+def slate_menu():
+    # shows the player's slate collection and lets them switch active slate
+    slates = get_all_slates()
+
+    print("\n--- Your slate collection ---")
+    for name in slates:
+        print(f"  {name}")
+
+    print("\nEnter a slate name to make it active, or 'back' to return.")
+    choice = input("> ").strip()
+
+    if choice.lower() == "back":
+        return
+
+    if choice.lower() not in [s.lower() for s in slates]:
+        print("Slate not found.")
+        return
+
+    set_active_slate(choice)
+
+def main():
+    # runs once at startup to make sure all folders and files exist
+    initialize()
+
+    print("Welcome to Blank Slate.")
+
+    while True:
+        # show the active slate name in the menu header
+        slate = get_active_slate()
+        slate_name = slate["name"] if slate else "None"
+
+        print(f"\n--- Main Menu --- (Active Slate: {slate_name})")
+        print("  [1] Chat with your Slate")
+        print("  [2] Open a lootbox")
+        print("  [3] View inventory")
+        print("  [4] Switch active Slate")
+        print("  [5] Quit")
+
+        choice = input("\n> ").strip()
+
+        if choice == "1":
+            chat_with_slate()
+        elif choice == "2":
+            open_lootbox_menu()
+        elif choice == "3":
+            inventory_menu()
+        elif choice == "4":
+            slate_menu()
+        elif choice == "5":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, please enter 1-5.")
+
+# this block ensures main() only runs when you execute this file directly
+# and not when another file imports from it
+if __name__ == "__main__":
+    main()
