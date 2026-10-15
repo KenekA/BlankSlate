@@ -6,6 +6,7 @@
 import os
 from dotenv import load_dotenv
 import anthropic
+from trait_manager import apply_trait_to_slate, get_trait_by_id, get_conflicting_trait_id
 
 from slate_manager import (
     initialize,           # sets up folders and files on first run
@@ -155,6 +156,16 @@ def inventory_menu():
     # get the full trait data so we can show the name
     trait_data = get_trait_by_id(trait_id)
     trait_name = trait_data["name"] if trait_data else trait_id
+
+        # check for a conflict BEFORE changing anything
+    # if there is one, stop here so the inventory copy isn't consumed
+    conflict_id = get_conflicting_trait_id(slate, trait_id)
+    if conflict_id is not None:
+        conflict_data = get_trait_by_id(conflict_id)
+        conflict_name = conflict_data["name"] if conflict_data else conflict_id
+        print(f"\nCan't apply {trait_name}: {slate['name']} already has {conflict_name}.")
+        print("Nothing was used. The trait is still in your inventory.")
+        return
 
     # apply the trait and save
     slate = apply_trait_to_slate(slate, trait_id, stars)

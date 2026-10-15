@@ -11,6 +11,11 @@ TRAITS_FILE = os.path.join("data", "traits.json")
 # the maximum stars a single trait can reach
 STAR_CAP = 10
 
+# drop chance (%) for each star rating, index 0 = 1 star ... index 9 = 10 stars
+# stars 1-9 drop in a straight line (20% down to 2%, 2.25 per step), 10 stars = 1%
+# must contain exactly STAR_CAP entries
+STAR_WEIGHTS = [20, 17.75, 15.5, 13.25, 11, 8.75, 6.5, 4.25, 2, 1]
+
 def load_all_traits():
     # loads the full nested traits dictionary from traits.json
     # structure is: { "red": { "red_001": {...}, ... }, "gold": {...}, ... }
@@ -40,8 +45,10 @@ def get_all_traits_flat():
     return flat
 
 def roll_stars():
-    # generates a random star rating between 1 and 10 for a dropped trait
-    return random.randint(1, STAR_CAP)
+     # weighted random star rating from 1 to STAR_CAP
+    # low stars are common, high stars are rare
+    stars = list(range(1, STAR_CAP + 1))
+    return random.choices(stars, weights=STAR_WEIGHTS, k=1)[0]
 
 def apply_trait_to_slate(slate, trait_id, incoming_stars):
     # check for a conflicting white tier trait before applying
